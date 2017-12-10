@@ -61,10 +61,8 @@ const faceUp = card => {
 
 const faceDown = card => {
     state.cards[card].facingUp = false;
-    requestAnimationFrame(() => {
-        state.cards[card].el.classList.remove('card--front');
-        state.cards[card].el.classList.add('card--back');
-    });
+    state.cards[card].el.classList.remove('card--front');
+    state.cards[card].el.classList.add('card--back');
 };
 
 const faceUpLastOnDesk = index => {
@@ -220,7 +218,6 @@ function dealCards() {
 }
 
 function resetGame() {
-    // cardObjectArray.sort(() => (Math.random() < .5) ? -1 : 1);
     const dealPileEl = document.getElementById('js-deck-pile');
 
     // clear decks
@@ -237,19 +234,22 @@ function resetGame() {
     state.cards.sort(() => (Math.random() < .5) ? -1 : 1);
 
     // re-assign indexes
-    for (let i = 0, l = state.cards.length; i < l; i++) {
-        state.cards[i].el.onmousedown = captureMove(i);
-        state.cards[i].el.onmouseup = releaseMove;
-        state.cards[i].el.onclick = handleClick(i);
-    }
+    requestAnimationFrame(() => {
+        for (let i = 0, l = state.cards.length; i < l; i++) {
+            const { facingUp, el } = state.cards[i];
+            state.deal.pile.cards.push(i);
 
-    for (let i = 0; i < state.cards.length; i++) {
-        faceDown(i);
-        state.deal.pile.cards.push(i);
-        dealPileEl.appendChild(state.cards[i].el);
-    }
+            el.onmousedown = captureMove(i);
+            el.onmouseup = releaseMove;
+            el.onclick = handleClick(i);
 
-    dealCards();
+            if (facingUp) {
+                faceDown(i);
+            }
+            dealPileEl.appendChild(el);
+        }
+        dealCards();
+    });
 }
 
 const handleClick = index => event => {
@@ -624,7 +624,8 @@ function initSolitaire() {
             const el = document.createElement('div');
             el.classList.add(
                 'card',
-                `card--${state.types[i]}-${j}`
+                `card--${state.types[i]}-${j}`,
+                'card--back'
             );
 
             state.cards.push({
