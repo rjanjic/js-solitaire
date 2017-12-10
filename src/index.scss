@@ -7,7 +7,8 @@ $card-h: 96px;
     box-sizing: border-box;
 }
 
-html {
+html,
+body {
     width: 100%;
     height: 100%;
     margin: 0;
@@ -15,16 +16,15 @@ html {
 }
 
 body {
-    background-color: #008000;
-    font-family: Trebuchet MS, Lucida Sans Unicode, Arial, sans-serif;
-    padding: 0;
-    min-height: 100vh;
-    height: 100%;
-    height: 100vh;
-    position: relative;
+    background: #008080;
     display: block !important;
-    min-width: 680px;
-    margin: 0;
+}
+
+.solitaire {
+    width: 660px;
+    background-color: green;
+    height: 440px;
+    position: relative;
 }
 
 .card {
@@ -92,7 +92,6 @@ body {
 
 .deck {
     width: 250px;
-    height: 150px;
     position: absolute;
     left: 20px;
     top: 20px;
@@ -100,7 +99,7 @@ body {
     &__pile {
         width: $card-w;
         height: $card-h;
-        top: 22px;
+        top: 0;
         position: absolute;
         border: 1px dotted;
         border-radius: 4px;
@@ -123,7 +122,7 @@ body {
 
     &__deal {
         left: 95px;
-        top: 22px;
+        top: 0;
         position: absolute;
 
         .card:last-child {
@@ -151,7 +150,7 @@ body {
 .finish-deck {
     position: absolute;
     left: 274px;
-    top: 40px;
+    top: 20px;
 }
 
 .board-deck {
@@ -175,7 +174,7 @@ body {
     position: relative;
     float: left;
     width: $card-w;
-    top: 20px;
+    top: 0;
     margin-left: 20px;
     height: $card-h;
     border: 1px dotted;
@@ -210,24 +209,84 @@ body {
 }
 
 .new-game {
-    min-width: $card-w;
-    border: 2px solid;
-    border-color: #eee #999 #999 #eee;
-    background-color: #ccc;
+    background-color: transparent;
     border-radius: 0;
-    padding: 4px;
-    outline: 0;
-    position: absolute;
-    left: 20px;
-    top: 5px;
+    padding: 0;
+    border: 0;
     cursor: pointer;
     white-space: nowrap;
+    outline: 0;
 
     &:active {
-        border-color: #999 #eee #eee #999;
+        background-color: #999;
     }
 }
 
 .finish-dest {
-    box-shadow: 0 0 0 1px red;
+    box-shadow: 0 0 0 1px #03ffff;
+}
+
+.window {
+    margin: 20px auto;
+    width: 671px;
+    color: #000;
+    font-family: 'Arial',sans-serif;
+    background: #c0c0c0;
+    border: 1px solid;
+    border-top-color: #dfdfdf;
+    border-left-color: #dfdfdf;
+    border-right-color: #000;
+    border-bottom-color: #000;
+
+    &__inner {
+        border: 1px solid;
+        border-top-color: #fff;
+        border-left-color: #fff;
+        border-right-color: #808080;
+        border-bottom-color: #808080;
+    }
+
+    &__heading {
+        margin: 2px 2px 0;
+        padding: 1px 2px;
+        color: #fff;
+        background: linear-gradient(to right, #000080, #1084d0);
+        font-weight: bold;
+        font-size: 12px;
+        line-height: 16px;
+    }
+
+    &__heading-icon {
+        background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgBAMAAACBVGfHAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAFVBMVEUAAAAAAAD///+AgIDAwMCAAAAAAIAAY5KrAAAAAXRSTlMAQObYZgAAAAFiS0dEAmYLfGQAAAAHdElNRQfhDAoMHRkpnFJaAAAAgElEQVQoz2NgwAoEIQDOZ1SCAAG4gDEEGMKViLiAgSOaESaOaEYIIwSCgFxVJAHVUKBAaBCmgCCaFkFjAbglTkpAQhhqDaOIi6OLEtApii4QFSIigoIijkCsDDWDUUQsLVEsLU1EGeZ0oAAIjBQBSLSIKMOiEhpvLopoEScIVgAAic47kFb3MSkAAAAldEVYdGRhdGU6Y3JlYXRlADIwMTctMTItMTBUMTI6Mjk6MjUtMDU6MDAhZWq4AAAAJXRFWHRkYXRlOm1vZGlmeQAyMDE3LTEyLTEwVDEyOjI5OjI1LTA1OjAwUDjSBAAAAABJRU5ErkJggg==');
+        background-size: 16px 16px;
+        background-repeat: no-repeat;
+        margin-right: 4px;
+        width: 16px;
+        height: 16px;
+        float: left;
+    }
+
+    &__actions {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+
+    &__content {
+        margin: 0 2px 2px 2px;
+        border: 1px solid;
+        border-top-color: #808080;
+        border-left-color: #808080;
+        border-bottom-color: #fff;
+        border-right-color: #fff;
+        font-size: 13px;
+    }
+
+    &__content-inner {
+        background: #fff;
+        border: 1px solid;
+        border-top-color: #000;
+        border-left-color: #000;
+        border-bottom-color: #dfdfdf;
+        border-right-color: #dfdfdf;
+    }
 }

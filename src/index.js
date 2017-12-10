@@ -530,64 +530,82 @@ const getAvailableDestinations = (index, first = false) => {
     return destinations;
 };
 
+const gameEl = document.getElementById('js-solitaire');
+
 const gameFinish = () => {
     // game finish check
     for (let i = 3; i >= 0; i--) {
         const l = state.finish[i].cards.length;
         if (l < 13) return;
     }
-    win()
+
+    const { width, height, left, top } = gameEl.getBoundingClientRect();
+    win(width, height, left, top);
 };
 
-const win = () => {
+window.win = () => {
+    const { width, height, left, top } = gameEl.getBoundingClientRect();
+    win(width, height, left, top);
+};
+
+
+const win = (canvasWidth, canvasHeight, canvasLeft, canvasTop) => {
     const image = document.createElement('img');
     image.src = spriteImg;
     const canvas = document.createElement('canvas');
     canvas.style.position = 'absolute';
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    document.body.appendChild(canvas);
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+    gameEl.appendChild(canvas);
+
     const context = canvas.getContext('2d');
     let id = 52;
-    const cwidth = 71, cwidthhalf = cwidth / 2;
-    const cheight = 96, cheighthalf = cheight / 2;
+    const cwidth = 71;
+    const cheight = 96;
     const particles = [];
     const Particle = function (id, x, y, sx, sy) {
         if (sx === 0) sx = 2;
         const cx = ( id % 4 ) * cwidth;
         const cy = Math.floor(id / 4) * cheight;
-        this.update = function () {
+        this.update = () => {
             x += sx;
             y += sy;
-            if (x < ( -cwidthhalf ) || x > ( canvas.width + cwidthhalf )) {
+
+            // out of canvas
+            if (x < -cwidth || x > (canvas.width + cwidth)) {
                 const index = particles.indexOf(this);
                 particles.splice(index, 1);
                 return false;
             }
 
-            if (y > canvas.height - cheighthalf) {
-                y = canvas.height - cheighthalf;
+            // bounce from floor
+            if (y > canvas.height - cheight) {
+                y = canvas.height - cheight;
                 sy = -sy * 0.85;
             }
             sy += 0.98;
-            context.drawImage(image, cx, cy, cwidth, cheight, Math.floor(x - cwidthhalf), Math.floor(y - cheighthalf), cwidth, cheight);
+
+            context.drawImage(image, cx, cy, cwidth, cheight, Math.floor(x), Math.floor(y), cwidth, cheight);
             return true;
         }
     };
 
     const throwCard = function (x, y) {
-        id > 0 ? id-- : id;
         if (id < 1) return;
+        id--;
         const particle = new Particle(id, x, y, Math.floor(Math.random() * 6 - 3) * 2, -Math.random() * 16);
+
+        // const particle = new Particle(id, x, y, 0, 0);
         particles.push(particle);
     };
 
     let throwInterval = [];
     for (let i = 0; i < 4; i++) {
-        const { width, height, left, top } = state.finish[i].el.getBoundingClientRect();
+        const { left, top } = state.finish[i].el.getBoundingClientRect();
         throwInterval[i] = setInterval(function () {
-            throwCard(left + width - width/2 , top + height - height/2 + 4);
+            throwCard(left - canvasLeft, top - canvasTop);
         }, 1000);
+        // throwCard(left - canvasLeft, top - canvasTop);
     }
 
     const updateInterval = setInterval(function () {
@@ -595,6 +613,7 @@ const win = () => {
         while (i < l) {
             particles[i].update() ? i++ : l--;
         }
+        // clearInterval(updateInterval)
     }, 1000 / 60);
 
     function removeAnimation(event) {
@@ -609,7 +628,6 @@ const win = () => {
     document.addEventListener('click', removeAnimation, false);
 };
 
-window.win = win;
 
 function initSolitaire() {
     // add sprite
