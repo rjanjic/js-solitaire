@@ -1,6 +1,8 @@
 import spriteImg from './sprite';
 import './index.scss';
 
+const cardWidth = 71;
+const cardHeight = 96;
 const state = {
     // clubs (♣), diamonds (♦), hearts (♥) and spades (♠)
     types: ['c', 'd', 'h', 's'],
@@ -134,7 +136,7 @@ const getCardLocation = card => {
             }
         }
     }
-    debugger;
+    // debugger;
     // 'Card not found!';
 };
 
@@ -548,7 +550,6 @@ window.win = () => {
     win(width, height, left, top);
 };
 
-
 const win = (canvasWidth, canvasHeight, canvasLeft, canvasTop) => {
     const image = document.createElement('img');
     image.src = spriteImg;
@@ -559,43 +560,71 @@ const win = (canvasWidth, canvasHeight, canvasLeft, canvasTop) => {
     gameEl.appendChild(canvas);
 
     const context = canvas.getContext('2d');
-    let id = 52;
-    const cwidth = 71;
-    const cheight = 96;
+    let card = 52;
     const particles = [];
+
+    const drawCard = (x, y, spriteX, spriteY) => {
+        context.drawImage(
+            image,
+            spriteX,
+            spriteY,
+            cardWidth,
+            cardHeight,
+            x,
+            y,
+            cardWidth,
+            cardHeight
+        );
+    };
+
     const Particle = function (id, x, y, sx, sy) {
         if (sx === 0) sx = 2;
-        const cx = ( id % 4 ) * cwidth;
-        const cy = Math.floor(id / 4) * cheight;
+        const spriteX = ( id % 4 ) * cardWidth;
+        const spriteY = Math.floor(id / 4) * cardHeight;
+
+        // initial position of the card
+        drawCard(x, y, spriteX, spriteY);
+
         this.update = () => {
             x += sx;
             y += sy;
 
-            // out of canvas
-            if (x < -cwidth || x > (canvas.width + cwidth)) {
+            // is particle out of canvas
+            if (x < -cardWidth || x > (canvas.width + cardWidth)) {
                 const index = particles.indexOf(this);
                 particles.splice(index, 1);
                 return false;
             }
 
             // bounce from floor
-            if (y > canvas.height - cheight) {
-                y = canvas.height - cheight;
+            if (y > canvas.height - cardHeight) {
+                y = canvas.height - cardHeight;
                 sy = -sy * 0.85;
             }
             sy += 0.98;
 
-            context.drawImage(image, cx, cy, cwidth, cheight, Math.floor(x), Math.floor(y), cwidth, cheight);
+            drawCard(
+                Math.floor(x),
+                Math.floor(y),
+                spriteX,
+                spriteY
+            );
             return true;
-        }
+        };
     };
 
-    const throwCard = function (x, y) {
-        if (id < 1) return;
-        id--;
-        const particle = new Particle(id, x, y, Math.floor(Math.random() * 6 - 3) * 2, -Math.random() * 16);
+    const throwCard = (x, y) => {
+        if (card < 1) return;
+        card--;
+        const particle = new Particle(
+            card,
+            x,
+            y,
+            Math.floor(Math.random() * 6 - 3) * 2,
+            -Math.random() * 16
+        );
 
-        // const particle = new Particle(id, x, y, 0, 0);
+        // const particle = new Particle(card, x, y, 0, 0);
         particles.push(particle);
     };
 
@@ -627,7 +656,6 @@ const win = (canvasWidth, canvasHeight, canvasLeft, canvasTop) => {
     }
     document.addEventListener('click', removeAnimation, false);
 };
-
 
 function initSolitaire() {
     // add sprite
