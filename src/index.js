@@ -1,6 +1,14 @@
 import spriteImg from './sprite';
 import './index.scss';
 
+const gameEl = document.getElementById('js-solitaire');
+const dealPileEl = document.getElementById('js-deck-pile');
+const dealEl = document.getElementById('js-deck-deal');
+const finishContainerEl = document.getElementById('js-finish');
+const deskContainerEl = document.getElementById('js-board');
+const deckPileEl = document.getElementById('js-deck-pile');
+const resetEl = document.getElementById('js-reset');
+
 const cardWidth = 71;
 const cardHeight = 96;
 const state = {
@@ -126,7 +134,7 @@ const getCardLocation = card => {
         }
     }
 
-    for (let i of ['pile', 'deal']) {
+    for (let i of ['deal', 'pile']) {
         const index = state.deal[i].cards.indexOf(card);
         if (index > -1) {
             return {
@@ -220,8 +228,6 @@ function dealCards() {
 }
 
 function resetGame() {
-    const dealPileEl = document.getElementById('js-deck-pile');
-
     // clear decks
     for (let i = 0; i < 7; i++) {
         state.desk[i].cards = [];
@@ -300,7 +306,6 @@ const handleClick = index => event => {
         // is on deal deck
         const { location, pile } = getCardLocation(index);
         if (location === 'deal' && pile === 'pile') {
-            const dealEl = document.getElementById('js-deck-deal');
             const max = state.deal.pile.cards.length - 1;
             const min = Math.max(-1, max - 3);
 
@@ -316,14 +321,13 @@ const handleClick = index => event => {
 };
 
 function restartDeal() {
-    const destinationEl = document.getElementById('js-deck-pile');
     state.deal.pile.cards = state.deal.deal.cards;
     state.deal.deal.cards = [];
 
     for (const card of state.deal.pile.cards) {
         const { el } = getCard(card);
         faceDown(card);
-        destinationEl.appendChild(el);
+        deckPileEl.appendChild(el);
     }
 }
 
@@ -532,7 +536,6 @@ const getAvailableDestinations = (index, first = false) => {
     return destinations;
 };
 
-const gameEl = document.getElementById('js-solitaire');
 
 const gameFinish = () => {
     // game finish check
@@ -684,7 +687,6 @@ function initSolitaire() {
     }
 
     // create aces decks
-    const finishContainerEl = document.getElementById('js-finish');
     for (let i = 0; i < 4; i++) {
         const el = document.createElement('div');
         el.classList.add(
@@ -699,7 +701,6 @@ function initSolitaire() {
     }
 
     // create desk decks
-    const deskContainerEl = document.getElementById('js-board');
     for (let i = 0; i < 7; i++) {
         const el = document.createElement('div');
         el.classList.add(
@@ -713,12 +714,12 @@ function initSolitaire() {
         deskContainerEl.appendChild(el);
     }
 
-    resetGame();
-
-    document.getElementById('js-deck-pile').onclick = restartDeal;
-    document.getElementById('js-reset').onclick = resetGame;
+    dealPileEl.onclick = restartDeal;
+    resetEl.onclick = resetGame;
     window.onmousemove = handleMove;
     window.onmouseup = releaseMove;
+
+    resetGame();
 }
 
 window.onload = initSolitaire;
